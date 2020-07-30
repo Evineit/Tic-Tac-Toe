@@ -1,11 +1,3 @@
-cells = input("Enter cells:")
-print("""---------
-| {} {} {} |
-| {} {} {} |
-| {} {} {} |
----------""".format(*cells))
-
-
 def is_possible(matrix):
     x_count = 0
     o_count = 0
@@ -15,17 +7,6 @@ def is_possible(matrix):
         elif x == "O":
             o_count += 1
     if abs(x_count - o_count) >= 2:
-        return False
-    else:
-        return True
-
-
-def is_finished(matrix):
-    count = 0
-    for x in matrix:
-        if x != "_":
-            count += 1
-    if count < 5:
         return False
     else:
         return True
@@ -52,7 +33,7 @@ def get_winner(matrix):
     if len(winner) == 2:
         return "Impossible"
     elif len(winner) == 0:
-        if len([x for x in matrix if x == "_"]) > 1:
+        if matrix.count("_") > 1:
             return "Game not finished"
         return "Draw"
     else:
@@ -61,7 +42,7 @@ def get_winner(matrix):
 
 def get_state(matrix):
     if is_possible(matrix):
-        if is_finished(matrix):
+        if (matrix.count("X") + matrix.count("O")) > 5:
             return get_winner(matrix)
         else:
             return "Game not finished"
@@ -69,4 +50,10 @@ def get_state(matrix):
         return "Impossible"
 
 
+cells = input("Enter cells:")
+print("""---------
+| {} {} {} |
+| {} {} {} |
+| {} {} {} |
+---------""".format(*cells))
 print(get_state(cells))
