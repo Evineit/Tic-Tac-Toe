@@ -3,7 +3,7 @@ import string
 
 def get_if_equal(line):
     result = all(element == line[0] for element in line)
-    if result and result != "_":
+    if result and line[0] != "_":
         return line[0]
     return
 
@@ -19,37 +19,23 @@ def get_winner(matrix):
     winner.add(get_if_equal(matrix[::4]))
     winner.add(get_if_equal(matrix[2:7:2]))
     winner.discard(None)
-    if len(winner) == 2:
-        return "Impossible"
-    elif len(winner) == 0:
-        if matrix.count("_") > 1:
-            return "Game not finished"
+    if len(winner) == 0 and (matrix.count("X") + matrix.count("O")) == 9:
         return "Draw"
-    else:
+    elif len(winner) == 1:
         return "{} wins".format(winner.pop())
+    else:
+        return
 
 
 def get_state(matrix):
-    if abs(matrix.count("X") - matrix.count("O")) < 2:
-        if (matrix.count("X") + matrix.count("O")) > 5:
-            return get_winner(matrix)
-        else:
-            return "Game not finished"
-    else:
-        return "Impossible"
-
-
-cells = input("Enter cells:")
-print("""---------
-| {} {} {} |
-| {} {} {} |
-| {} {} {} |
----------""".format(*cells))
-columns = [list(cells[6:9]), list(cells[3:6]), list(cells[0:3])]
+    new_matrix = [elem for row in matrix for elem in row]
+    if abs(new_matrix.count("X") - new_matrix.count("O")) < 2:
+        if (new_matrix.count("X") + new_matrix.count("O")) > 5:
+            return get_winner(new_matrix)
 
 
 def to_cell(a, b):
-    return columns[a - 1][b - 1]
+    return rows[a - 1][b - 1]
 
 
 def print_board():
@@ -57,10 +43,10 @@ def print_board():
 | {} {} {} |
 | {} {} {} |
 | {} {} {} |
----------""".format(*columns[2], *columns[1], *columns[0]))
+---------""".format(*rows[2], *rows[1], *rows[0]))
 
 
-def next_move():
+def next_move(player):
     is_occupied = False
     is_number = False
     in_range = False
@@ -77,18 +63,33 @@ def next_move():
             col = int(col)
             if 0 < row <= 3 and 0 < col <= 3:
                 in_range = True
-                if columns[col - 1][row - 1] == "_":
+                if rows[col - 1][row - 1] == "_":
                     is_occupied = True
-                    columns[col - 1][row - 1] = "X"
+                    rows[col - 1][row - 1] = player
                     print_board()
                 else:
                     print("This cell is occupied! Choose another one!")
-
             else:
                 print("Coordinates should be from 1 to 3!")
         else:
             print("You should enter numbers!")
 
 
-next_move()
-# print(get_state(cells))
+cells = "_" * 9
+rows = [list(cells[6:9]), list(cells[3:6]), list(cells[0:3])]
+
+
+def play():
+    print("""---------
+| {} {} {} |
+| {} {} {} |
+| {} {} {} |
+---------""".format(*cells))
+    player = "X"
+    while not get_state(rows):
+        next_move(player)
+        player = "O" if player != "O" else "X"
+    print(get_state(rows))
+
+
+play()
