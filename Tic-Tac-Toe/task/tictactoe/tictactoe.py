@@ -30,7 +30,7 @@ def get_winner(matrix):
 def get_state(matrix):
     new_matrix = [elem for row in matrix for elem in row]
     if abs(new_matrix.count("X") - new_matrix.count("O")) < 2:
-        if (new_matrix.count("X") + new_matrix.count("O")) > 5:
+        if (new_matrix.count("X") + new_matrix.count("O")) >= 5:
             return get_winner(new_matrix)
 
 
